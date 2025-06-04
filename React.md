@@ -781,3 +781,399 @@ const handleClick = (name) => {
 ✅ **Keyboard Events:** `onKeyDown` to detect key presses.  
 ✅ **Mouse Events:** `onMouseEnter` / `onMouseLeave` for hover effects.  
 ✅ **Passing Arguments:** Use arrow functions to pass parameters.  
+
+---
+
+### 🚦 What is a Router in React?
+
+A **Router** in React helps us **navigate between different pages (components)** in a React app **without refreshing the page**.
+
+---
+
+### 🛠️ What do we use for routing?
+
+We use a library called **React Router**. It gives us special components like:
+
+* `<BrowserRouter>` – wraps your app and enables routing.
+* `<Routes>` – holds all your route definitions.
+* `<Route>` – defines a single route (page).
+* `<Link>` – works like `<a>` but without reloading the page.
+
+---
+
+### 📦 Install React Router
+
+```bash
+npm install react-router-dom
+```
+
+---
+
+### 🧱 Basic Example:
+
+```jsx
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link> |
+        <Link to="/about">About</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+---
+
+### 🔍 What Happens Here?
+
+* `BrowserRouter` → enables routing in your app.
+* `Link` → lets users go to other pages without refreshing.
+* `Routes` → holds all the routes.
+* `Route` → tells what component to show for a specific path.
+
+---
+## Other Method. `createBrowserRouter()`
+
+### ✅ What is `createBrowserRouter()`?
+
+It is a newer way to define routes **using JavaScript objects** instead of JSX `<Route>` components.
+
+You define your **routes as an array of objects**, and then use `<RouterProvider>` to enable them in your app.
+
+---
+
+### 📦 What is a Route?
+
+A **Route** in React defines **what component to show** when the user visits a specific **URL path**.
+
+---
+
+### 🛠️ Example:
+
+```js
+{ path: "/", element: <Home /> }
+```
+
+👆 This means:
+
+> When the user visits **`/`**, show the **`<Home />`** component.
+
+---
+
+### 🧱 Basic Route Setup
+
+You define routes like this:
+
+```js
+import { createBrowserRouter } from "react-router-dom";
+
+const router = createBrowserRouter([
+  { path: "/", element: <Home /> },
+  { path: "/about", element: <About /> },
+  { path: "/contact", element: <Contact /> }
+]);
+```
+
+Then you wrap your app with:
+
+```jsx
+<RouterProvider router={router} />
+```
+
+---
+
+### 🧭 How to Navigate Between Routes
+
+Use `<Link>` instead of `<a>` (to avoid page reload):
+
+```jsx
+import { Link } from "react-router-dom";
+
+<Link to="/">Home</Link>
+<Link to="/about">About</Link>
+<Link to="/contact">Contact</Link>
+```
+
+---
+
+### 🚪 What if I want common layout (like Navbar)?
+
+You use **nested routes**:
+
+```js
+{
+  path: "/",
+  element: <App />,     // App has Navbar and <Outlet />
+  children: [
+    { path: "/", element: <Home /> },
+    { path: "/about", element: <About /> }
+  ]
+}
+```
+
+In `App.jsx`:
+
+```jsx
+import { Outlet } from "react-router-dom";
+
+function App() {
+  return (
+    <>
+      <Navbar />
+      <Outlet />  // This shows the current route component
+    </>
+  );
+}
+```
+
+---
+
+### 🚨 What about 404 Route (Page Not Found)?
+
+Add this at the end of your children:
+
+```js
+{ path: "*", element: <NotFound /> }
+```
+
+It will match any **undefined route**.
+
+---
+
+### ✅ Summary
+
+| Concept        | Meaning                            |
+| -------------- | ---------------------------------- |
+| `path`         | The URL to match                   |
+| `element`      | The component to show              |
+| `children`     | Nested routes inside a layout      |
+| `<Outlet />`   | Where child components will appear |
+| `<Link to="">` | Navigate to another route          |
+| `path: "*"`    | Catch-all for unknown routes (404) |
+
+---
+
+Absolutely! Let's talk about **`NavLink`** in React Router — in the same **simple and clear way**.
+
+---
+
+### 🧭 What is `<NavLink>`?
+
+`<NavLink>` is just like `<Link>`, but it can **automatically add a CSS class when the link is active** (i.e., when the URL matches).
+
+✅ It's perfect for **highlighting active pages** in a navbar.
+
+---
+
+### 🛠️ Basic Usage:
+
+```jsx
+import { NavLink } from "react-router-dom";
+
+<NavLink to="/">Home</NavLink>
+<NavLink to="/login">Login</NavLink>
+```
+
+---
+
+### 🎨 Add Active Style or Class
+
+#### 🔹 Example with `className`:
+
+```jsx
+<NavLink
+  to="/"
+  className={({ isActive }) => isActive ? "active-link" : ""}
+>
+  Home
+</NavLink>
+```
+
+* `isActive` is `true` if the link matches the current URL.
+* You can use it to apply a custom class.
+
+---
+
+### 💡 Why Use `NavLink`?
+
+| Feature              | `<Link>` | `<NavLink>` |
+| -------------------- | -------- | ----------- |
+| Navigation           | ✅        | ✅           |
+| Active class support | ❌        | ✅           |
+| Useful for navbars   | ❌        | ✅           |
+
+---
+
+### ✅ Final Tip: Styling Example
+
+```css
+/* in index.css or App.css */
+.active-link {
+  color: red;
+  font-weight: bold;
+}
+```
+
+Now when you're on that route, the link will automatically be styled.
+
+---
+
+
+### 🔑 What are Params in React Router?
+
+**Params** are dynamic parts of the URL, like:
+
+```
+/user/101
+/product/abc123
+```
+
+Here, `101` and `abc123` are **URL parameters** — they **change based on user or item**.
+
+---
+
+### 🛠️ How to Define a Param Route?
+
+Use `:` to define a **dynamic value** in the path:
+
+```js
+{ path: "/user/:id", element: <User /> }
+```
+
+🟢 It means:
+
+> This route matches `/user/1`, `/user/101`, `/user/xyz`, etc.
+
+---
+
+### 🔍 How to Read Params?
+
+Use the hook:
+
+```js
+import { useParams } from "react-router-dom";
+
+function User() {
+  const params = useParams();
+  return <h2>User ID is: {params.id}</h2>;
+}
+```
+
+🧠 `params.id` will give you whatever is in the URL after `/user/`.
+
+---
+
+### ✨ Full Example
+
+#### 👇 Route Setup:
+
+```js
+{
+  path: "/user/:id",
+  element: <User />
+}
+```
+
+#### 👇 Component:
+
+```jsx
+function User() {
+  const { id } = useParams();
+  return <h1>Hello, User {id}</h1>;
+}
+```
+
+#### 👇 Link to Navigate:
+
+```jsx
+<Link to="/user/101">Visit User 101</Link>
+```
+
+---
+Perfect! Let's now learn about **Search Params** in React Router — in the same **easy and clear way**.
+
+---
+
+### 🔍 What are Search Params?
+
+Search params are the **`?key=value`** part of a URL.
+
+For example:
+
+```
+/products?category=shoes&sort=price
+```
+
+Here:
+
+* `category = shoes`
+* `sort = price`
+
+These values are not part of the route path — they are **query parameters**.
+
+---
+
+### 🧰 How to Access Search Params?
+
+Use the hook:
+
+```js
+import { useSearchParams } from "react-router-dom";
+```
+
+---
+
+### ✅ Example
+
+#### 👇 Component:
+
+```jsx
+import { useSearchParams } from "react-router-dom";
+
+function Products() {
+  const [searchParams] = useSearchParams();
+
+  const category = searchParams.get("category");
+  const sort = searchParams.get("sort");
+
+  return (
+    <div>
+      <h2>Category: {category}</h2>
+      <h3>Sort By: {sort}</h3>
+    </div>
+  );
+}
+```
+
+#### 👇 URL to Visit:
+
+```
+/products?category=shoes&sort=price
+```
+
+---
+
+### 🧭 How to Set Search Params from Code?
+
+```js
+const [searchParams, setSearchParams] = useSearchParams();
+
+setSearchParams({ category: "bags", sort: "newest" });
+```
+
+🔁 This will change the URL to:
+
+```
+/products?category=bags&sort=newest
+```
